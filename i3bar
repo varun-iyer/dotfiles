@@ -1,0 +1,12 @@
+#!/bin/sh
+# shell script to prepend i3status with more stuff
+y="%"
+d="||"
+l="BAT"
+v="VOL"
+i3status | while sleep 1 ;
+do
+	x="$v $(amixer get Master | tail -n 1 | grep -o -P '.{0,3}%.{0,0}' | sed s_'\['__) $d $l  $(upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep percentage:*| grep -o "[0-9.]\+"$y; ) $(upower -i /org/freedesktop/UPower/devices/battery_BAT0 | grep state | cut -c26)$d $(date; )"
+	echo "$x"
+
+done
