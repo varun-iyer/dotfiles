@@ -1,9 +1,12 @@
+execute pathogen#infect()
 set clipboard=unnamedplus
-autocmd BufWinLeave *.* mkview
-autocmd BufWinEnter *.* silent loadview 
+set cursorline
+set cursorcolumn
+syntax enable
+set background=dark
+colorscheme solarized
 set mouse=""
 set autoindent
-set cursorcolumn
 set rnu
 set nu
 set paste
@@ -16,5 +19,8 @@ nnoremap k gk
 nnoremap ; :
 nnoremap j gj
 cnoremap <Esc> <Return>
- 
- 
+set tabstop=4 
+set shiftwidth=4 
+set foldmethod=indent 
+nmap <F8> :TagbarToggle<CR>
+set autoindent
