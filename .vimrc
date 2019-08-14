@@ -1,4 +1,5 @@
 execute pathogen#infect()
+let &colorcolumn=join(range(81,999),",")
 set clipboard=unnamedplus
 set cursorline
 set cursorcolumn
@@ -15,12 +16,11 @@ nmap <S-Enter> O<Space><Esc>
 nmap <CR> o<Space><Esc>
 nnoremap <Space>b ?
 nnoremap <Space> /
-nnoremap k gk
 nnoremap ; :
-nnoremap j gj
 cnoremap <Esc> <Return>
-set tabstop=4 
-set shiftwidth=4 
+set tabstop=4
+set shiftwidth=4
 set foldmethod=indent 
 nmap <F8> :TagbarToggle<CR>
 set autoindent
+set listchars=trail:~,tab:>-

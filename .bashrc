@@ -146,4 +146,5 @@ alias cwd='cd $(cat /home/varun/.wd)'
 alias wd='$(cat /home/varun/.wd)'
 export WD=$(cat /home/varun/.wd)
 cd $WD
+alias vmake='vim -c :make'
 ranger
