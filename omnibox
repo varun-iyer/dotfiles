@@ -1,11 +1,16 @@
 #!/usr/bin/python3
 import sys
 import os
+import shlex
 from shutil import which
 from subprocess import Popen, PIPE
 from collections import defaultdict
 
-dmenu_file = "/home/varun/.local/bin/a"
+zoom = 1.2
+if len(sys.argv) > 1:
+    zoom = float(sys.argv[1])
+
+# if len(sys.argv
 
 def is_url(string):
     clean = string.strip()
@@ -42,7 +47,10 @@ def url_format(search):
     return nomodify
 
 def dmenu(list_strings):
-    process = Popen(["sh", "-c", 'echo "{}" | dmenu -p "omnibox" -fn "DejaVuSansMono:size=10"'.format("\n".join(list_strings), dmenu_file)], stdout=PIPE)
+    fsize = 15
+    if zoom > 1.5:
+        fsize = 22
+    process = Popen(["sh", "-c", 'echo "{}" | dmenu -p "omnibox" -fn Input:pixelsize={}:antialias=true:autohint=true:style=Regular'.format("\n".join(list_strings), fsize)], stdout=PIPE)
     exit_code = process.wait()
     comm = process.communicate()
     if exit_code == 1:
@@ -58,11 +66,15 @@ def run(command):
     os.execlp(commands[0], commands[0], *commands[1:])
  
 def surf(string):
+    print(string)
     if is_url(string):
-        os.execlp("surf", "surf", "-z", "1.2", "-aA", string)
+        os.execlp("surf", "surf", "-z", str(zoom), "-aA", string)
     else:
-        search = "https://duckduckgo.com/{}".format(url_format(string))
-        os.execlp("surf", "surf", "-z", "1.2", search)
+        search = "https://duckduckgo.com/?q={}&kae=d&ko=-1".format(url_format(string))
+        print(search)
+        os.execlp("surf", "surf", "-z", str(zoom), search)
+        ## os.environ["BROWSER"] = "/usr/local/bin/surf"
+        ## os.execlp("st", "st", "ddgr", "--colors", "bjdxxy", *shlex.split(string))
 
 # GET list of runable programs ######
 programs = set()
@@ -93,11 +105,9 @@ with open("/home/varun/.recent", "w") as f:
 
 # check first characters
 if usin[0] == "?":
-    surf(url_format(usin[1:]))
+    surf(usin[1:])
 elif usin[0] == "$":
     run(usin[1:])
-elif is_url(usin):
-    surf(usin)
 elif which(usin.split(" ")[0]) is not None:
     run(usin)
 else:

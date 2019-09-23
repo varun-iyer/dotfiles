@@ -1,16 +1,15 @@
 /* See LICENSE file for copyright and license details. */
- 
 
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
 static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
-enum showtab_modes { showtab_never, showtab_auto, showtab_nmodes, showtab_always };
-static const int showtab 			= showtab_always;
-static const int toptab				= False;
-static const char *fonts[]          = { "monospace:size=10" };
-static const char dmenufont[]       = "monospace:size=10";
+enum showtab_modes { showtab_never, showtab_auto, showtab_nmodes, showtab_always }
+static const int showtab 			= showtab_auto;
+static const int toptab				= True;
+static const char *fonts[]          = { "MesloLGS:pixelsize=10:antialias=true:autohint=true:style=Regular" };
+static const char dmenufont[]       = "MesloLGS:pixelsize=10:antialias=true:autohint=true:style=Regular";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
@@ -19,7 +18,7 @@ static const char col_cyan[]        = "#005577";
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+	[SchemeSel]  = { col_gray4, col_gray3,  col_gray3  },
 };
 
 /* tagging */
@@ -30,9 +29,8 @@ static const Rule rules[] = {
 	 *	WM_CLASS(STRING) = instance, class
 	 *	WM_NAME(STRING) = title
 	 */
-	/* class      instance    title       tags mask     isfloating   isterminal noswallow monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,           0,			0,			-1 },
-	{ "st",       NULL,       NULL,       0,            0,           1,			1,			-1 },
+	/* class      instance    title       tags mask     isfloating   monitor */
+	{ "Gimp",     NULL,       NULL,       0,            1,           -1 },
 	//{ "Firefox",  NULL,       NULL,       1 << 8,       0,           -1 },
 };
 
@@ -65,32 +63,23 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
 static const char *termcmd[]  = { "st", NULL };
-static const char *termbigcmd[]  = { "st", "-f", "Input:pixelsize=22:antialias=true:autohint=true:style=Regular", NULL };
-static const char *omnicmd[]  = { "omnibox", NULL };
-static const char *omnibigcmd[]  = { "omnibox", "2", NULL };
-static const char surfpaste[]  = "surf $(xclip -o)";
 static const char *incbrightcmd[]  = { "light", "-A", "5", NULL };
-static const char *decbrightcmd[]  = { "light", "-U", "5", NULL };
+static const char *decbrightcmd[]  = { "light", "-D", "5", NULL };
 static const char *incvolcmd[]  = { "", NULL };
 static const char *decvolcmd[]  = { "st", NULL };
-
-static const char **termcmds[] = {termcmd, termbigcmd};
-static const char **omnicmds[] = {omnicmd, omnibigcmd};
-
-static const int maxmon = 1920;
+static const char *omnicmd[]  = { "omnibox", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
-	{ 0 	,                       XF86XK_MonBrightnessUp,    spawn,      { .v = incbrightcmd } },
-	{ 0 	,                       XF86XK_MonBrightnessDown,  spawn,      { .v = decbrightcmd } },
+	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
+	{ MODKEY,			            XK_Return, spawn,          {.v = termcmd } },
+	{ MODKEY|ShiftMask,	            XK_Return, spawn,          {.v = omnicmd } },
+	{ MODKEY,                       XK_b,      togglebar,      {0} },
+	{ NULL	,                       XK_XF86MonBrightnessUp,    spawn,      { .v = dmenucmd } },
+	{ NULL	,                       XK_XF86MonBrightnessDown,  spawn,      { .v = dmenucmd } },
 	//{ NULL	,                       XK_XF86AudioRaiseVolume,   spawn,      { .v = dmenucmd } },
 	//{ NULL	,                       XK_XF86AudioLowerVolume,   spawn,      { .v = dmenucmd } },
-	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
-	{ MODKEY,                       XK_v,      spawn,          SHCMD(surfpaste) },
-	{ MODKEY,			            XK_Return, spawnopt,       {.v = termcmds} },
-	//{ MODKEY,			            XK_Return, spawn,		{.v = termbigcmd} },
-	{ MODKEY|ShiftMask,	            XK_Return, spawnopt,       {.v = omnicmds } },
-	{ MODKEY,                       XK_b,      togglebar,      {0} },
+	{ NULL	,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,						XK_w,      tabmode,		   {-1} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
@@ -143,3 +132,4 @@ static Button buttons[] = {
 	{ ClkTagBar,            MODKEY,         Button3,        toggletag,      {0} },
 	{ ClkTabBar,            0,              Button1,        focuswin,       {0} },
 };
+
