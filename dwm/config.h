@@ -9,8 +9,11 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 enum showtab_modes { showtab_never, showtab_auto, showtab_nmodes, showtab_always };
 static const int showtab 			= showtab_always;
 static const int toptab				= False;
-static const char *fonts[]          = { "monospace:size=10" };
-static const char dmenufont[]       = "monospace:size=10";
+static const char *fonts[]          = { "Input Sans:pixelsize=15" };
+static const char *bigfonts[]          = { "Input Sans:pixelsize=22" };
+
+
+static const char dmenufont[]       = "Input:size=10";
 static const char col_gray1[]       = "#222222";
 static const char col_gray2[]       = "#444444";
 static const char col_gray3[]       = "#bbbbbb";
@@ -60,17 +63,19 @@ static const Layout layouts[] = {
 
 /* helper for spawning shell commands in the pre dwm-5.0 fashion */
 #define SHCMD(cmd) { .v = (const char*[]){ "/bin/sh", "-c", cmd, NULL } }
+#define SHIT(cmd) { "/bin/sh", "-c", cmd, NULL } 
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
-static const char *termcmd[]  = { "st", NULL };
-static const char *termbigcmd[]  = { "st", "-f", "Input:pixelsize=22:antialias=true:autohint=true:style=Regular", NULL };
+static const char *termcmd[]  = SHIT("st bash -c \"cd $(xcwd); bash\"");
+static const char *termbigcmd[]  = SHIT("st -f \"Input Mono:pixelsize=22:antialias=true:autohint=true:style=Regular\" bash -c \"cd $(xcwd); bash\"");
+// static const char *termbigcmd[]  = {"st", "-f", "Input Mono:pixelsize=22:antialias=true:autohint=true:style=Regular"};
 static const char *omnicmd[]  = { "omnibox", NULL };
 static const char *omnibigcmd[]  = { "omnibox", "2", NULL };
 static const char surfpaste[]  = "surf $(xclip -o)";
-static const char *incbrightcmd[]  = { "light", "-A", "5", NULL };
-static const char *decbrightcmd[]  = { "light", "-U", "5", NULL };
+static const char *incbrightcmd[]  = { "xbacklight", "-inc", "5", NULL };
+static const char *decbrightcmd[]  = { "xbacklight", "-dec", "5", NULL };
 static const char *incvolcmd[]  = { "", NULL };
 static const char *decvolcmd[]  = { "st", NULL };
 
@@ -83,6 +88,8 @@ static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ 0 	,                       XF86XK_MonBrightnessUp,    spawn,      { .v = incbrightcmd } },
 	{ 0 	,                       XF86XK_MonBrightnessDown,  spawn,      { .v = decbrightcmd } },
+	{ MODKEY,                       XK_plus,     spawn,      { .v = incbrightcmd } },
+	{ MODKEY,                       XK_minus,   spawn,      { .v = decbrightcmd } },
 	//{ NULL	,                       XK_XF86AudioRaiseVolume,   spawn,      { .v = dmenucmd } },
 	//{ NULL	,                       XK_XF86AudioLowerVolume,   spawn,      { .v = dmenucmd } },
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },

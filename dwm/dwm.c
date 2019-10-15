@@ -841,6 +841,11 @@ dirtomon(int dir)
 void
 drawbar(Monitor *m)
 {
+	Fnt *font; 
+	if(m->mw > maxmon) {
+		font = 	drw_fontset_create(drw, bigfonts, LENGTH(bigfonts));
+		drw_setfontset(drw, font);
+	}
 	int x, w, sw = 0;
 	int boxs = drw->fonts->h / 9;
 	int boxw = drw->fonts->h / 6 + 2;
@@ -876,8 +881,11 @@ drawbar(Monitor *m)
 
 	if ((w = m->ww - sw - x) > bh) {
 		if (m->sel) {
+			int mid = (m->ww - TEXTW(m->sel->name)) / 2 - x;
+			/* make sure name will not overlap on tags even when it is very long */
+			mid = mid >= lrpad / 2 ? mid : lrpad / 2;
 			drw_setscheme(drw, scheme[m == selmon ? SchemeSel : SchemeNorm]);
-			drw_text(drw, x, 0, w, bh, lrpad / 2, m->sel->name, 0);
+			drw_text(drw, x, 0, w, bh, mid, m->sel->name, 0);
 			if (m->sel->isfloating)
 				drw_rect(drw, x + boxs, boxs, boxw, boxw, m->sel->isfixed, 0);
 		} else {
@@ -886,6 +894,10 @@ drawbar(Monitor *m)
 		}
 	}
 	drw_map(drw, m->barwin, 0, 0, m->ww, bh);
+	if(m->mw > maxmon) {
+		drw_fontset_free(font);
+		drw_fontset_create(drw, fonts, LENGTH(fonts));
+	}
 }
 
 void
@@ -1946,7 +1958,7 @@ spawnopt(const Arg *arg)
 		if (dpy)
 			close(ConnectionNumber(dpy));
 		setsid();
-		char **cmd = (selmon->mw < maxmon) ? ((char ***)arg->v)[0] : ((char ***)arg->v)[1];
+		char **cmd = (selmon->mw <= maxmon) ? ((char ***)arg->v)[0] : ((char ***)arg->v)[1];
 		execvp(cmd[0], cmd);
 		fprintf(stderr, "dwm: execvp %s", cmd[0]);
 		perror(" failed");

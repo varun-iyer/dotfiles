@@ -175,8 +175,7 @@ drw_fontset_create(Drw* drw, const char *fonts[], size_t fontcount)
 		return NULL;
 
 	for (i = 1; i <= fontcount; i++) {
-		if ((cur = xfont_create(drw, fonts[fontcount - i], NULL))) {
-			cur->next = ret;
+		if ((cur = xfont_create(drw, fonts[fontcount - i], NULL))) { cur->next = ret;
 			ret = cur;
 		}
 	}
