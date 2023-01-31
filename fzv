@@ -1,0 +1,8 @@
+#!/bin/sh
+fname=$(mktemp $TMPDIR/vim_temporary.qfx.XXXX)
+fzf -m > $fname
+sed -i '' 's/$/:1:1/g' $fname
+if [[ $(wc -l < $fname) -ge 1 ]]
+then
+vim -q $fname
+fi
